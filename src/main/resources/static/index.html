@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Platform</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f2f5;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .nav-links a {
+            margin-left: 20px;
+            text-decoration: none;
+            color: #1877f2;
+            font-weight: bold;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 30px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .form-container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        input[type="email"] {
+            padding: 12px;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #1877f2;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #166fe5;
+        }
+
+        .success-message {
+            color: #228B22;
+            background-color: #f0fff0;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+     <style>
+        /* Add to existing styles */
+        .error-message {
+            color: #ff0000;
+            background-color: #ffe6e6;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .success-message a {
+            color: #228B22;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<!-- Keep existing header and container structure -->
+
+<!-- Add error message containers -->
+<div class="error-message" id="loginError"></div>
+<div class="error-message" id="registerError"></div>
+<div class="header">
+    <h1>Welcome to Our Platform</h1>
+    <div class="nav-links">
+        <a href="#" id="loginLink">Login</a>
+        <a href="#" id="registerLink">Register</a>
+        <a href="#" id="logoutLink" style="display: none;">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Login Form -->
+    <div id="loginForm" class="form-container">
+        <h2>Login to Your Account</h2>
+        <form id="loginFormElement" onsubmit="handleLogin(event)">
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+    </div>
+
+    <!-- Registration Form -->
+    <div id="registerForm" class="form-container">
+        <h2>Create New Account</h2>
+        <form id="registerFormElement" onsubmit="handleRegister(event)">
+            <input type="text" placeholder="Full Name" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Register</button>
+        </form>
+    </div>
+
+    <!-- Registration Success Message -->
+    <div id="regSuccess" class="success-message" style="display: none;">
+        <h3>Registration Successful!</h3>
+        <p>Please check your email to activate your account.
+            <a href="#" onclick="showActivationMessage()">Click here</a> to resend activation link.
+        </p>
+    </div>
+
+    <!-- Logged In Content -->
+    <div id="loggedInSection" style="display: none;">
+        <h2>Welcome, User!</h2>
+        <p>You are successfully logged in to your account.</p>
+    </div>
+</div>
+
+<script>
+        // Show/hide forms
+        document.getElementById('loginLink').addEventListener('click', () => showSection('loginForm'));
+        document.getElementById('registerLink').addEventListener('click', () => showSection('registerForm'));
+        document.getElementById('logoutLink').addEventListener('click', handleLogout);
+
+        function showSection(sectionId) {
+            // Hide all forms
+            document.querySelectorAll('.form-container').forEach(form => {
+                form.style.display = 'none';
+            });
+            // Show selected form
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function handleLogin(event) {
+            event.preventDefault();
+            // Simulate login success
+            document.querySelectorAll('.form-container').forEach(form => form.style.display = 'none');
+            document.getElementById('loggedInSection').style.display = 'block';
+            document.getElementById('logoutLink').style.display = 'inline';
+            document.querySelectorAll('.nav-links a:not(#logoutLink)').forEach(link => {
+                link.style.display = 'none';
+            });
+        }
+
+        function handleRegister(event) {
+            event.preventDefault();
+            // Show registration success message
+            document.getElementById('registerForm').style.display = 'none';
+            document.getElementById('regSuccess').style.display = 'block';
+        }
+
+        function handleLogout() {
+            // Reset UI state
+            document.getElementById('loggedInSection').style.display = 'none';
+            document.getElementById('logoutLink').style.display = 'none';
+            document.querySelectorAll('.nav-links a:not(#logoutLink)').forEach(link => {
+                link.style.display = 'inline';
+            });
+        }
+
+        function showActivationMessage() {
+            alert('Activation link has been sent to your email!');
+        }
+
+        // Common fetch handler
+        async function handleApiCall(url, method, body) {
+            try {
+                const response = await fetch(url, {
+                    method: method,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body),
+                    credentials: 'include' // For session cookies
+                });
+
+                const data = await response.json();
+                if (!response.ok) throw new Error(data.message || 'Request failed');
+
+                return { success: true, data };
+            } catch (error) {
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Updated registration handler
+        async function handleRegister(event) {
+            event.preventDefault();
+            const registerError = document.getElementById('registerError');
+            registerError.style.display = 'none';
+
+            const formData = {
+                email: event.target.elements[1].value,
+                password: event.target.elements[2].value,
+                username: event.target.elements[0].value
+            };
+
+            const result = await handleApiCall('/api/register', 'POST', formData);
+
+            if (result.success) {
+                document.getElementById('registerForm').style.display = 'none';
+                const successDiv = document.getElementById('regSuccess');
+                successDiv.style.display = 'block';
+                successDiv.innerHTML = `
+                    <h3>Registration Successful!</h3>
+                    <p>Please check your email to activate your account.
+                        <a onclick="verifyToken('${result.data.token}')">Click here</a>
+                        to activate immediately.
+                    </p>
+                `;
+            } else {
+                registerError.textContent = result.error;
+                registerError.style.display = 'block';
+            }
+        }
+
+        // Updated login handler
+        async function handleLogin(event) {
+            event.preventDefault();
+            const loginError = document.getElementById('loginError');
+            loginError.style.display = 'none';
+
+            const formData = {
+                email: event.target.elements[0].value,
+                password: event.target.elements[1].value
+            };
+
+            const result = await handleApiCall('/api/login', 'POST', formData);
+
+            if (result.success) {
+                document.querySelectorAll('.form-container').forEach(f => f.style.display = 'none');
+                document.getElementById('loggedInSection').style.display = 'block';
+                document.getElementById('logoutLink').style.display = 'inline';
+                document.querySelectorAll('.nav-links a:not(#logoutLink)').forEach(link => {
+                    link.style.display = 'none';
+                });
+            } else {
+                loginError.textContent = result.error;
+                loginError.style.display = 'block';
+            }
+        }
+
+        // Verification handler
+        async function verifyToken(token) {
+            const result = await handleApiCall(`/api/verify?token=${token}`, 'GET');
+            if (result.success) {
+                alert('Account activated successfully! You can now login.');
+            } else {
+                alert('Activation failed: ' + result.error);
+            }
+        }
+
+        // Updated logout handler
+        async function handleLogout() {
+            const result = await handleApiCall('/api/logout', 'POST');
+            if (result.success) {
+                document.getElementById('loggedInSection').style.display = 'none';
+                document.getElementById('logoutLink').style.display = 'none';
+                document.querySelectorAll('.nav-links a:not(#logoutLink)').forEach(link => {
+                    link.style.display = 'inline';
+                });
+            }
+        }
+
+        // Keep existing showSection function and event listeners
+    </script>
+</body>
+</html>
